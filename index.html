@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#21182f">
+    <meta name="description" content="A little birthday surprise, made with love.">
+    <title>A Little Surprise for You</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="music.js" defer></script>
+  </head>
+  <body>
+    <div class="night-sky" aria-hidden="true">
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+      <span class="sky-star"></span>
+    </div>
+
+    <main class="surprise-stage">
+      <details class="surprise">
+        <summary class="envelope-toggle">
+          <span class="recipient">For <span class="recipient-name">Mama Analy</span></span>
+
+          <span class="envelope" aria-hidden="true">
+            <span class="envelope-back"></span>
+            <span class="envelope-lining"></span>
+            <span class="letter-edge"></span>
+            <span class="envelope-flap"></span>
+            <span class="envelope-pocket"></span>
+            <span class="wax-seal"><span class="seal-impression"></span></span>
+          </span>
+
+          <span class="invitation">
+            <span class="when-closed">Open your surprise<span class="invitation-dot">.</span></span>
+            <span class="when-open">Close your surprise</span>
+            <span class="invitation-arrow" aria-hidden="true"></span>
+          </span>
+        </summary>
+
+        <div class="reveal">
+          <article class="greeting-card" aria-labelledby="birthday-heading">
+            <div class="card-ornament" aria-hidden="true"><span></span></div>
+
+            <div class="cake-scene" aria-hidden="true">
+              <span class="candle"><span class="flame"></span></span>
+              <span class="cake-body"></span>
+              <span class="cake-icing"></span>
+              <span class="cake-plate"></span>
+            </div>
+
+            <h1 id="birthday-heading">Happy birthday,<br><span>Mama Analy! ❤️</span></h1>
+
+            <div class="message-divider" aria-hidden="true"><span></span></div>
+
+            <p class="personal-message" lang="ceb">Ma, salamat kaayo sa imong pag-atiman sa amo. Usahay makalimot ko og ingon og salamat, pero dako kaayo kog pasalamat sa tanan ninyong gibuhat para saamo. Unta nga himsog ka pirmi aron daghan pa tag birthdays nga celebrate puhon. Bawi rami sainyo puhon ma mahalin atong sinako nga yuta hahahaha</p>
+            <p class="personal-message" lang="ceb">I love you, Ma!</p>
+            <p class="signature">
+              <span>Love,</span>
+              <span lang="ceb">Imong anak nga gwapo, <span class="sender-name">John Louis</span></span>
+            </p>
+
+            <div class="music-controls" hidden>
+              <button class="music-toggle" type="button" aria-label="Birthday background music" aria-pressed="false">
+                <span class="music-note" aria-hidden="true">♫</span>
+                <span class="music-label">Play music</span>
+              </button>
+              <p class="music-caption">Happy Birthday · a little music-box melody</p>
+            </div>
+          </article>
+
+          <div class="confetti" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+      </details>
+    </main>
+  </body>
+</html>

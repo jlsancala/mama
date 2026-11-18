@@ -1,0 +1,818 @@
+/* Change these colors to give the whole surprise a new palette. */
+:root {
+  color-scheme: dark;
+  --midnight: #21182f;
+  --midnight-deep: #171120;
+  --midnight-soft: #382640;
+  --gold: #d9b779;
+  --gold-light: #f4db9f;
+  --gold-deep: #93632c;
+  --blush: #e6b6b5;
+  --blush-deep: #90616a;
+  --cream: #fff9ed;
+  --paper: #f1ded2;
+  --paper-light: #fff0e2;
+  --paper-fold: #d8b9ad;
+  --ink: #382b3b;
+  --ink-soft: #6a5460;
+  --card-rule: #ded0b6;
+  --focus: #f6d58e;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--midnight-deep);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 50% 42%, #50334633, transparent 58%),
+    radial-gradient(ellipse at 50% 0%, var(--midnight-soft), transparent 72%),
+    var(--midnight);
+  color: var(--cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  position: fixed;
+  z-index: 0;
+  inset: 1rem;
+  border: 1px solid #d9b7791c;
+  border-radius: 2px;
+  content: "";
+  pointer-events: none;
+}
+
+button,
+summary {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::marker {
+  content: "";
+}
+
+summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 7px;
+}
+
+/* Quiet, hand-placed stars. Every decorative layer ignores pointer input. */
+.night-sky {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sky-star {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.45;
+}
+
+.sky-star:nth-child(3n + 1) {
+  width: 13px;
+  height: 13px;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  opacity: 0.7;
+}
+
+.sky-star:nth-child(1) { top: 17%; left: 15%; }
+.sky-star:nth-child(2) { top: 31%; left: 8%; width: 3px; height: 3px; }
+.sky-star:nth-child(3) { top: 72%; left: 18%; }
+.sky-star:nth-child(4) { top: 81%; left: 31%; width: 10px; height: 10px; }
+.sky-star:nth-child(5) { top: 11%; left: 68%; width: 3px; height: 3px; }
+.sky-star:nth-child(6) { top: 27%; left: 88%; }
+.sky-star:nth-child(7) { top: 64%; left: 83%; }
+.sky-star:nth-child(8) { top: 87%; left: 72%; width: 3px; height: 3px; }
+.sky-star:nth-child(9) { top: 9%; left: 38%; width: 3px; height: 3px; }
+.sky-star:nth-child(10) { top: 44%; left: 94%; width: 8px; height: 8px; }
+
+.surprise-stage {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 3.5rem 1.25rem;
+  place-items: center;
+}
+
+.surprise {
+  width: 100%;
+  max-width: 40rem;
+  min-width: 0;
+}
+
+.envelope-toggle {
+  display: grid;
+  width: 100%;
+  padding: 1.25rem 0;
+  border-radius: 6px;
+  justify-items: center;
+  text-align: center;
+}
+
+.recipient {
+  margin-bottom: 2.8rem;
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5.8vw, 2rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.recipient::before {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0 auto 1.5rem;
+  background: var(--gold);
+  clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  content: "";
+}
+
+/* The envelope and its moving top flap are entirely CSS paper shapes. */
+.envelope {
+  position: relative;
+  display: block;
+  width: min(100% - 1.5rem, 24rem);
+  aspect-ratio: 1.58;
+  filter: drop-shadow(0 18px 22px #09060e55);
+  perspective: 900px;
+  pointer-events: none;
+}
+
+.envelope-back,
+.envelope-lining,
+.letter-edge,
+.envelope-flap,
+.envelope-pocket,
+.wax-seal {
+  position: absolute;
+  display: block;
+}
+
+.envelope-back {
+  inset: 0;
+  border: 1px solid var(--paper-fold);
+  border-radius: 4px;
+  background: var(--paper-fold);
+}
+
+.envelope-lining {
+  inset: 1px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(45deg, #d9b77913 0 1px, transparent 1px 9px),
+    #8d6371;
+}
+
+.letter-edge {
+  z-index: 1;
+  inset: 10% 7% 8%;
+  border: 1px solid #e7d7bb;
+  border-radius: 2px;
+  background: var(--cream);
+  box-shadow: 0 -4px 0 -2px var(--paper-light);
+}
+
+.envelope-flap {
+  z-index: 4;
+  inset: 0 0 auto;
+  height: 65%;
+  background: var(--paper-fold);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: center top;
+  transition: transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.envelope-flap::after {
+  position: absolute;
+  inset: 0 1px 2px;
+  border-top: 1px solid #fff8ef;
+  background: linear-gradient(180deg, var(--paper-light), var(--paper) 96%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  content: "";
+}
+
+.envelope-pocket {
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid #e4c8b8;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--paper-light), var(--paper));
+  clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%);
+}
+
+.envelope-pocket::before,
+.envelope-pocket::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+.envelope-pocket::before {
+  background: linear-gradient(145deg, #fff4e8, #e5c8bc);
+  clip-path: polygon(0 0, 53% 61%, 0 100%);
+}
+
+.envelope-pocket::after {
+  background: linear-gradient(215deg, #f8e7da, #dfbfb3);
+  clip-path: polygon(100% 0, 47% 61%, 100% 100%);
+}
+
+.wax-seal {
+  z-index: 5;
+  top: 49%;
+  left: 50%;
+  display: grid;
+  width: 4rem;
+  aspect-ratio: 1;
+  border: 1px solid #f3cf8a;
+  border-radius: 46% 51% 45% 49% / 49% 45% 52% 46%;
+  background: linear-gradient(135deg, #f7dc9c, #c6954d 48%, #e4bd71 72%, #a57534);
+  box-shadow: 0 4px 7px #6e422d45, inset 0 0 0 4px #c9954b44, inset 0 0 0 5px #f6d48e80;
+  transform: translate(-50%, -15%);
+  transition: opacity 200ms, transform 300ms;
+  place-items: center;
+}
+
+.seal-impression {
+  position: relative;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid #95652c88;
+  border-radius: 50%;
+  box-shadow: 0 1px 0 #ffe9ad80, inset 0 1px 2px #90602733;
+}
+
+.seal-impression::before,
+.seal-impression::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.65rem;
+  height: 1.05rem;
+  border-radius: 0.65rem 0.65rem 0 0;
+  background: #99662d;
+  box-shadow: inset 1px 1px 1px #714b2355;
+  content: "";
+  transform: translate(-71%, -50%) rotate(-45deg);
+  transform-origin: 50% 68%;
+}
+
+.seal-impression::after {
+  transform: translate(-29%, -50%) rotate(45deg);
+}
+
+.invitation {
+  display: flex;
+  min-height: 2.75rem;
+  margin-top: 2.3rem;
+  color: var(--gold-light);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.13em;
+  line-height: 1.5;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.invitation-arrow {
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-top: -0.2rem;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 200ms;
+}
+
+.envelope-toggle:hover .invitation {
+  color: var(--cream);
+}
+
+.when-open,
+.surprise > .reveal {
+  display: none;
+}
+
+/* Opening keeps the little envelope as a compact, usable close control. */
+.surprise[open] > .envelope-toggle {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 1.75rem;
+  padding: 1.75rem 0.5rem 0.25rem;
+  grid-template-columns: 5.5rem minmax(0, auto);
+  column-gap: 1.25rem;
+  justify-items: start;
+  text-align: left;
+}
+
+.surprise[open] .recipient {
+  align-self: end;
+  margin: 0;
+  font-size: 1.25rem;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.surprise[open] .recipient::before {
+  display: none;
+}
+
+.surprise[open] .envelope {
+  align-self: center;
+  width: 5.5rem;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.surprise[open] .envelope-flap {
+  z-index: 0;
+  transform: rotateX(180deg);
+}
+
+.surprise[open] .wax-seal {
+  opacity: 0;
+  transform: translate(-50%, 20%) scale(0.7);
+}
+
+.surprise[open] .invitation {
+  align-self: start;
+  min-height: 2.75rem;
+  margin-top: 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.055em;
+  gap: 0.6rem;
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.surprise[open] .invitation-arrow {
+  margin-top: 0.2rem;
+  transform: rotate(225deg);
+}
+
+.surprise[open] .when-closed {
+  display: none;
+}
+
+.surprise[open] .when-open,
+.surprise[open] > .reveal {
+  display: block;
+}
+
+.reveal {
+  position: relative;
+  isolation: isolate;
+}
+
+/* The card stays in document flow so longer messages can scroll naturally. */
+.greeting-card {
+  position: relative;
+  z-index: 1;
+  padding: 2.25rem clamp(1.5rem, 7vw, 4rem) 1.25rem;
+  border: 1px solid #efe0c4;
+  border-radius: 5px 5px 3px 3px;
+  background:
+    radial-gradient(ellipse at 50% 0, #fffef8, transparent 65%),
+    var(--cream);
+  box-shadow: 0 22px 60px #0d081b55, 0 4px 0 -1px #e5d5bf, 0 7px 0 -2px #ae8c7455;
+  color: var(--ink);
+  color-scheme: light;
+  text-align: center;
+  animation: card-arrive 700ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+
+.greeting-card::before {
+  position: absolute;
+  inset: 0.6rem;
+  border: 1px solid var(--card-rule);
+  border-radius: 2px;
+  content: "";
+  pointer-events: none;
+}
+
+.card-ornament {
+  display: flex;
+  width: 5.5rem;
+  margin: 0 auto 1.5rem;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.card-ornament::before,
+.card-ornament::after {
+  height: 1px;
+  background: var(--card-rule);
+  content: "";
+  flex: 1;
+}
+
+.card-ornament span {
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--gold-deep);
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+}
+
+.cake-scene {
+  position: relative;
+  width: 8.5rem;
+  height: 6.5rem;
+  margin: 0 auto 1.25rem;
+  animation: cake-arrive 800ms 450ms both;
+}
+
+.cake-body {
+  position: absolute;
+  top: 3rem;
+  left: 1.2rem;
+  width: 6.1rem;
+  height: 2.6rem;
+  border: 1px solid #bd85874d;
+  border-radius: 0.3rem 0.3rem 0.45rem 0.45rem;
+  background:
+    linear-gradient(transparent 56%, #fff3e6 56% 65%, transparent 65%),
+    repeating-linear-gradient(90deg, transparent 0 0.75rem, #fff6eb33 0.75rem 0.9rem),
+    linear-gradient(90deg, #ce9398, var(--blush) 35% 65%, #ce9398);
+  box-shadow: inset 0 -3px 0 #b8777d33;
+}
+
+.cake-icing {
+  position: absolute;
+  top: 2.7rem;
+  left: 1.2rem;
+  width: 6.1rem;
+  height: 0.85rem;
+  border-top: 1px solid #fffef9;
+  border-radius: 50% 50% 0.3rem 0.3rem / 40% 40% 30% 30%;
+  background: #fff1dc;
+  box-shadow: 0 2px 1px #b8777d25;
+}
+
+.cake-icing::before {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.65rem;
+  width: 0.5rem;
+  height: 0.8rem;
+  border-radius: 0 0 1rem 1rem;
+  background: #fff1dc;
+  box-shadow: 1.05rem -0.2rem #fff1dc, 2.3rem 0.1rem #fff1dc, 3.45rem -0.15rem #fff1dc, 4.3rem -0.3rem #fff1dc;
+  content: "";
+}
+
+.cake-plate {
+  position: absolute;
+  top: 5.6rem;
+  left: 0.5rem;
+  width: 7.5rem;
+  height: 0.35rem;
+  border: 1px solid #c9a56c;
+  border-radius: 50%;
+  background: #e7c992;
+  box-shadow: 0 5px 8px #946d4c15;
+}
+
+.candle {
+  position: absolute;
+  z-index: 1;
+  top: 1.3rem;
+  left: calc(50% - 0.2rem);
+  width: 0.4rem;
+  height: 1.55rem;
+  border: 1px solid #b88e58;
+  border-radius: 2px 2px 0 0;
+  background: repeating-linear-gradient(-35deg, #f8e3ac 0 4px, #c99b58 4px 7px);
+}
+
+.candle::before {
+  position: absolute;
+  top: -0.25rem;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 0.25rem;
+  background: var(--ink);
+  content: "";
+}
+
+.flame {
+  position: absolute;
+  top: -1.05rem;
+  left: -0.11rem;
+  width: 0.55rem;
+  height: 0.9rem;
+  border-radius: 70% 30% 55% 45%;
+  background: radial-gradient(ellipse at 50% 75%, #fff9d1 5% 20%, #f4cc6a 45%, #d9893e 85%);
+  box-shadow: 0 0 13px 5px #efc76b30;
+  transform-origin: center bottom;
+  animation: candle-flicker 1700ms ease-in-out infinite alternate;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6.5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+h1 span {
+  color: var(--blush-deep);
+  font-style: italic;
+}
+
+.message-divider {
+  display: grid;
+  width: 2.75rem;
+  height: 1px;
+  margin: 1.7rem auto;
+  background: var(--card-rule);
+  place-items: center;
+}
+
+.message-divider span {
+  width: 4px;
+  height: 4px;
+  background: var(--gold-deep);
+  box-shadow: 0 0 0 5px var(--cream);
+  transform: rotate(45deg);
+}
+
+.personal-message {
+  margin: 0;
+  font-size: 0.96875rem;
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+
+.personal-message + .personal-message {
+  margin-top: 1.25rem;
+}
+
+.signature {
+  display: grid;
+  margin: 1.65rem 0 1.75rem;
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  gap: 0.15rem;
+}
+
+.sender-name {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+
+.music-controls {
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-rule);
+}
+
+.music-toggle {
+  display: inline-flex;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.music-toggle:hover {
+  border-color: var(--card-rule);
+  background: #e6b6b515;
+  color: var(--ink);
+}
+
+.music-toggle:focus-visible {
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 3px;
+}
+
+.music-note {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #e6b6b52b;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  place-items: center;
+}
+
+.music-toggle[aria-pressed="true"] .music-note {
+  color: var(--blush-deep);
+}
+
+.music-caption {
+  margin: 0.35rem 0 0.25rem;
+  color: var(--ink-soft);
+  font-size: 0.6875rem;
+  line-height: 1.8;
+}
+
+/* A short, visible celebration that never blocks the card's controls. */
+.confetti {
+  position: absolute;
+  z-index: 2;
+  inset: -4.5rem -1rem 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti i {
+  --drift: 1rem;
+  --spin: 270deg;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0.4rem;
+  height: 0.85rem;
+  border-radius: 1px;
+  background: var(--gold);
+  opacity: 0;
+  animation: confetti-fall 2200ms ease-out both;
+}
+
+.confetti i:nth-child(3n) { background: var(--blush); --spin: -320deg; }
+.confetti i:nth-child(3n + 1) { background: var(--gold-light); height: 0.45rem; }
+.confetti i:nth-child(even) { --drift: -1.4rem; }
+.confetti i:nth-child(4n) { border-radius: 50%; width: 0.4rem; height: 0.4rem; }
+.confetti i:nth-child(1) { left: 4%; animation-delay: 50ms; }
+.confetti i:nth-child(2) { left: 12%; animation-delay: 180ms; }
+.confetti i:nth-child(3) { left: 21%; animation-delay: 80ms; }
+.confetti i:nth-child(4) { left: 29%; animation-delay: 240ms; }
+.confetti i:nth-child(5) { left: 37%; animation-delay: 20ms; }
+.confetti i:nth-child(6) { left: 44%; animation-delay: 160ms; }
+.confetti i:nth-child(7) { left: 51%; animation-delay: 70ms; }
+.confetti i:nth-child(8) { left: 59%; animation-delay: 260ms; }
+.confetti i:nth-child(9) { left: 68%; animation-delay: 120ms; }
+.confetti i:nth-child(10) { left: 76%; animation-delay: 30ms; }
+.confetti i:nth-child(11) { left: 86%; animation-delay: 210ms; }
+.confetti i:nth-child(12) { left: 94%; animation-delay: 90ms; }
+.confetti i:nth-child(13) { left: 2%; animation-delay: 310ms; }
+.confetti i:nth-child(14) { left: 9%; animation-delay: 420ms; }
+.confetti i:nth-child(15) { left: 18%; animation-delay: 340ms; }
+.confetti i:nth-child(16) { left: 26%; animation-delay: 470ms; }
+.confetti i:nth-child(17) { left: 34%; animation-delay: 380ms; }
+.confetti i:nth-child(18) { left: 42%; animation-delay: 290ms; }
+.confetti i:nth-child(19) { left: 54%; animation-delay: 430ms; }
+.confetti i:nth-child(20) { left: 63%; animation-delay: 350ms; }
+.confetti i:nth-child(21) { left: 72%; animation-delay: 480ms; }
+.confetti i:nth-child(22) { left: 80%; animation-delay: 320ms; }
+.confetti i:nth-child(23) { left: 89%; animation-delay: 400ms; }
+.confetti i:nth-child(24) { left: 98%; animation-delay: 280ms; }
+
+/* Pressing the card resets the burst; releasing it starts a fresh celebration. */
+.greeting-card:active + .confetti i {
+  animation: none;
+}
+
+@keyframes card-arrive {
+  from { transform: translateY(18px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes cake-arrive {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes candle-flicker {
+  0%, 100% { transform: rotate(-5deg) scale(1); }
+  35% { transform: rotate(4deg) scale(0.95, 1.06); }
+  70% { transform: rotate(-2deg) scale(1.05, 0.96); }
+}
+
+@keyframes confetti-fall {
+  0% { opacity: 0; transform: translate3d(0, -1rem, 0) rotate(0); }
+  8%, 40% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate3d(var(--drift), 26rem, 0) rotate(var(--spin)); }
+}
+
+@media (max-width: 480px) {
+  body::before {
+    inset: 0.6rem;
+  }
+
+  .surprise-stage {
+    padding: 2.5rem 1.1rem;
+  }
+
+  .recipient {
+    margin-bottom: 2.3rem;
+  }
+
+  .surprise[open] > .envelope-toggle {
+    margin-bottom: 1.4rem;
+    column-gap: 1rem;
+  }
+
+  .greeting-card {
+    padding-top: 1.8rem;
+  }
+
+  .card-ornament {
+    margin-bottom: 1.1rem;
+  }
+
+  .personal-message {
+    font-size: 0.9375rem;
+    line-height: 1.9;
+  }
+
+  .signature {
+    margin-top: 1.5rem;
+  }
+
+  .sky-star:nth-child(3n) {
+    opacity: 0.2;
+  }
+}
+
+/* Every revealed message remains immediately available without any motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .confetti {
+    display: none;
+  }
+
+  .cake-scene {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .envelope,
+  .cake-scene,
+  .night-sky,
+  .confetti {
+    display: none;
+  }
+
+  .greeting-card,
+  .envelope-toggle {
+    border: 1px solid CanvasText;
+  }
+
+  .surprise[open] > .envelope-toggle {
+    display: block;
+    padding: 0.75rem;
+  }
+
+  .invitation {
+    justify-content: center;
+  }
+}
